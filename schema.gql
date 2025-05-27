@@ -1,0 +1,60 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateTenantInput {
+  """Tenant name"""
+  name: String!
+}
+
+input CreateUserInput {
+  email: String!
+  name: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Mutation {
+  createTenant(input: CreateTenantInput!): Tenant!
+  createUser(input: CreateUserInput!): User!
+}
+
+type Query {
+  health: String!
+  tenant(id: String!): Tenant
+  tenants: [Tenant!]!
+  users: [User!]!
+}
+
+"""Tenant information"""
+type Tenant {
+  """When the tenant was created"""
+  createdAt: DateTime!
+
+  """Internal name used for tenant identification"""
+  name: String!
+
+  """When the tenant was last updated"""
+  updatedAt: DateTime!
+}
+
+"""User information"""
+type User {
+  """When the user was created"""
+  createdAt: DateTime!
+
+  """Email address of the user"""
+  email: String!
+
+  """Unique identifier for the user"""
+  id: ID!
+
+  """Full name of the user"""
+  name: String!
+
+  """When the user was last updated"""
+  updatedAt: DateTime!
+}
