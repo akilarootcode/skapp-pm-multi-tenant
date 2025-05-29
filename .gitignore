@@ -56,5 +56,5 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # Prisma Generated files
-prisma/schemas/master/**
-prisma/schemas/tenant/**
+prisma/master/client/**
+prisma/tenant/client/**
