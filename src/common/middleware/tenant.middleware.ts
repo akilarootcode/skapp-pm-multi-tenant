@@ -1,30 +1,19 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction } from 'express';
-import { CONSTANTS } from '@/constants';
-import { RequestWithTenant } from '@/types/request.types';
-import { TenantService } from '@/modules/tenant/tenant.service';
-import { TenantPrismaService } from '@/database/tenant-prisma.service';
+import { RequestWithTenant } from '@/common/types/request.types';
+import { TENANT_CONSTANTS } from '@/common/constants/tenant.constants';
+import { ValidationUtils } from '@/common/utils/validation.utils';
 
 @Injectable()
 export class TenantMiddleware implements NestMiddleware {
-  constructor(
-    private readonly tenantService: TenantService,
-    private readonly tenantPrismaService: TenantPrismaService,
-  ) {}
+  use(req: RequestWithTenant, _res: Response, next: NextFunction) {
+    const tenantId = req.headers[TENANT_CONSTANTS.HEADER_NAME] as string;
 
-  async use(req: RequestWithTenant, _res: Response, next: NextFunction) {
-    const tenantHeader = req.headers[CONSTANTS.TENANT.HEADER_NAME];
-    const tenantId = Array.isArray(tenantHeader)
-      ? tenantHeader[0]
-      : tenantHeader;
-
-    if (!tenantId) {
+    if (!tenantId?.trim()) {
       return next();
     }
 
-    await this.tenantPrismaService.connectTenant(tenantId);
-    req.tenant = await this.tenantService.getTenantByName(tenantId);
-
+    req.tenantName = ValidationUtils.validateAndNormalizeTenantName(tenantId);
     next();
   }
 }
