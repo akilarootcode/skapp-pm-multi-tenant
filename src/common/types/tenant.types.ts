@@ -3,3 +3,7 @@ export interface TenantData {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface TenantContextData {
+  tenantName: string;
+}

@@ -15,6 +15,7 @@ export enum ErrorCode {
   VALIDATION_FAILED = 'VALIDATION_FAILED',
   UNAUTHORIZED = 'UNAUTHORIZED',
   INTERNAL_ERROR = 'INTERNAL_ERROR',
+  TENANT_CONTEXT_NOT_FOUND = 'TENANT_CONTEXT_NOT_FOUND',
 }
 
 export const ERROR_MESSAGES: Record<ErrorCode, string> = {
@@ -44,4 +45,5 @@ export const ERROR_MESSAGES: Record<ErrorCode, string> = {
   [ErrorCode.VALIDATION_FAILED]: 'Input validation failed: {details}',
   [ErrorCode.UNAUTHORIZED]: 'Authorization required: {details}',
   [ErrorCode.INTERNAL_ERROR]: 'Internal server error occurred',
+  [ErrorCode.TENANT_CONTEXT_NOT_FOUND]: 'No tenant context found',
 };

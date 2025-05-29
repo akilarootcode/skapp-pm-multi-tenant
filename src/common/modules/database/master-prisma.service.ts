@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ENV_KEYS } from '@/common/constants/environment.constants';
 import { ModuleException } from '@/common/exceptions/module.exception';
 import { ErrorCode } from '@/common/enums/errors.enum';
 import { PrismaClient as MasterPrismaClient } from 'prisma/master/client';
+import { buildMasterDatabaseUrl } from '@/common/utils/database.utils';
+import { DatabaseMode } from '@/common/enums/database-mode.enum';
 
 @Injectable()
 export class MasterPrismaService {
@@ -10,17 +11,38 @@ export class MasterPrismaService {
   private masterWriteClient: MasterPrismaClient;
   private masterReadClient: MasterPrismaClient;
 
+  async readMasterClient(): Promise<MasterPrismaClient> {
+    if (!this.masterReadClient) {
+      await this.createMasterReadConnection().catch((error) => {
+        this.logger.error('Failed to connect to master read client', error);
+        throw new ModuleException(ErrorCode.MASTER_CLIENT_NOT_INITIALIZED);
+      });
+    }
+    return this.masterReadClient;
+  }
+
+  async writeMasterClient(): Promise<MasterPrismaClient> {
+    if (!this.masterWriteClient) {
+      await this.createMasterWriteConnection().catch((error) => {
+        this.logger.error('Failed to connect to master write client', error);
+        throw new ModuleException(ErrorCode.MASTER_CLIENT_NOT_INITIALIZED);
+      });
+    }
+
+    return this.masterWriteClient;
+  }
+
   private async createMasterReadConnection() {
     if (!this.masterReadClient) {
       this.masterReadClient = new MasterPrismaClient({
         datasources: {
           db: {
-            url: process.env[ENV_KEYS.MASTER_DATABASE_READ_URL],
+            url: buildMasterDatabaseUrl(DatabaseMode.READ),
           },
         },
       });
       await this.masterReadClient.$connect();
-      this.logger.log('Master database read replica connected');
+      this.logger.log('Connected to master read database: master');
     }
   }
 
@@ -29,33 +51,12 @@ export class MasterPrismaService {
       this.masterWriteClient = new MasterPrismaClient({
         datasources: {
           db: {
-            url: process.env[ENV_KEYS.MASTER_DATABASE_WRITE_URL],
+            url: buildMasterDatabaseUrl(DatabaseMode.WRITE),
           },
         },
       });
       await this.masterWriteClient.$connect();
-      this.logger.log('Master database write replica connected');
+      this.logger.log('Connected to master write database: master');
     }
-  }
-
-  readMasterClient(): MasterPrismaClient {
-    if (!this.masterReadClient) {
-      this.createMasterReadConnection().catch((error) => {
-        this.logger.error('Failed to connect to master read client', error);
-        throw new ModuleException(ErrorCode.MASTER_CLIENT_NOT_INITIALIZED);
-      });
-    }
-    return this.masterReadClient;
-  }
-
-  writeMasterClient(): MasterPrismaClient {
-    if (!this.masterWriteClient) {
-      this.createMasterWriteConnection().catch((error) => {
-        this.logger.error('Failed to connect to master write client', error);
-        throw new ModuleException(ErrorCode.MASTER_CLIENT_NOT_INITIALIZED);
-      });
-    }
-
-    return this.masterWriteClient;
   }
 }

@@ -13,10 +13,11 @@ export class TenantService {
     }
 
     const normalizedName = name.toLowerCase().trim();
-    const masterClient = this.masterPrismaService.readMasterClient();
-    const tenant = (await masterClient.tenant.findUnique({
+    const masterClient = await this.masterPrismaService.readMasterClient();
+
+    const tenant = await masterClient.tenant.findUnique({
       where: { name: normalizedName },
-    })) as Tenant | null;
+    });
 
     if (!tenant) {
       throw new TenantNotFoundException({ tenantName: normalizedName });
@@ -26,7 +27,7 @@ export class TenantService {
   }
 
   async getAllTenants(): Promise<Tenant[]> {
-    const masterClient = this.masterPrismaService.readMasterClient();
+    const masterClient = await this.masterPrismaService.readMasterClient();
     return (await masterClient.tenant.findMany({
       orderBy: { createdAt: 'desc' },
     })) as Tenant[];
