@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { GqlContext } from '@/common/types/request.types';
+import { ERROR_MESSAGES } from '@/common/enums/errors.enum';
 
 @Injectable()
 export class TenantRequiredGuard implements CanActivate {
@@ -15,9 +16,7 @@ export class TenantRequiredGuard implements CanActivate {
     const request = gqlContext.req;
 
     if (!request.tenantName) {
-      throw new UnauthorizedException({
-        details: 'The x-tenant-id header is required for this operation',
-      });
+      throw new UnauthorizedException(ERROR_MESSAGES.TENANT_HEADER_REQUIRED);
     }
 
     return true;

@@ -16,6 +16,7 @@ export enum ErrorCode {
   UNAUTHORIZED = 'UNAUTHORIZED',
   INTERNAL_ERROR = 'INTERNAL_ERROR',
   TENANT_CONTEXT_NOT_FOUND = 'TENANT_CONTEXT_NOT_FOUND',
+  TENANT_HEADER_REQUIRED = 'TENANT_HEADER_REQUIRED',
 }
 
 export const ERROR_MESSAGES: Record<ErrorCode, string> = {
@@ -46,4 +47,6 @@ export const ERROR_MESSAGES: Record<ErrorCode, string> = {
   [ErrorCode.UNAUTHORIZED]: 'Authorization required: {details}',
   [ErrorCode.INTERNAL_ERROR]: 'Internal server error occurred',
   [ErrorCode.TENANT_CONTEXT_NOT_FOUND]: 'No tenant context found',
+  [ErrorCode.TENANT_HEADER_REQUIRED]:
+    'The x-tenant-id header is required for this operation',
 };

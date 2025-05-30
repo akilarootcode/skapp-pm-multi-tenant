@@ -8,13 +8,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { GraphQLResolveInfo } from 'graphql';
-
-export interface SuccessResponse<T> {
-  data: T;
-  success: true;
-  timestamp: Date;
-  operation?: string;
-}
+import { SuccessResponse } from '@/common/types/response.types';
 
 @Injectable()
 export class SafeResponseInterceptor<T>
