@@ -59,7 +59,7 @@ const addConnectionParams = (
       : DATABASE_CONSTANTS.READ_MAX_CONNECTIONS,
     pool_timeout: isWrite
       ? DATABASE_CONSTANTS.WRITE_POOL_TIMEOUT
-      : DATABASE_CONSTANTS.READ_MAX_CONNECTIONS,
+      : DATABASE_CONSTANTS.READ_POOL_TIMEOUT,
     connect_timeout: DATABASE_CONSTANTS.CONNECT_TIMEOUT,
     socket_timeout: DATABASE_CONSTANTS.SOCKET_TIMEOUT,
     application_name: `${tenantName || TENANT_CONSTANTS.MASTER}_${isWrite ? DatabaseMode.WRITE : DatabaseMode.READ}_${Date.now()}`,
